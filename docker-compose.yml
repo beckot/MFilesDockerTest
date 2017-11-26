@@ -1,0 +1,37 @@
+version: '3'
+
+services:
+  sql:
+    image: microsoft/mssql-server-windows-developer
+    restart: on-failure
+    ports:
+      - '1433:1433'
+    expose:
+      - '1433'
+    environment:
+      ACCEPT_EULA: 'Y'
+      sa_password: 'Hongie5t'
+    networks:
+      - backend
+  app:
+    # depends_on:
+    #  - sql
+    build: ./m-files_app
+    # healtcheck causing issues ....
+    # restart: on-failure
+    ports:
+      - '443:443'
+      - '80:80'
+    environment:
+      MFILES_INSTALLER_URL: 'http://cdn.m-files.com/public/M-Files_11.3/M-Files_x64_eng_11_3_4330_254.msi'
+      MFILES_INSTALLER_SHA256: '1AB361E47EBACE119701DAD5EA79378C0C7DDD1FAA94A83AEA9DC2093C596DE3'
+      MFILES_VERSION: '11.3.4330.254'
+      MFILES_DNS: 'm-files.test.org'
+      MF_MSI_PATH: 'c:\mf_dl.msi'
+    networks:
+      - backend
+    
+networks: 
+  backend:
+    external:
+      name: 'nat'
