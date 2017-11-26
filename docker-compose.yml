@@ -33,5 +33,3 @@ services:
     
 networks: 
   backend:
-    external:
-      name: 'nat'
